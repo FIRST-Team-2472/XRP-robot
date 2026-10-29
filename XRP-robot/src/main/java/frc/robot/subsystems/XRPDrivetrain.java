@@ -38,7 +38,7 @@ public class XRPDrivetrain extends SubsystemBase {
     resetEncoders();
 
     // Invert right side since motor is flipped
-    m_rightMotor.setInverted(true);
+    m_leftMotor.setInverted(true);
   }
 
   public void arcadeDrive(double xaxisSpeed, double zaxisRotate) {
