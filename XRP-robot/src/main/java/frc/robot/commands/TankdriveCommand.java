@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import frc.robot.subsystems.SensorSubsystem;
 import frc.robot.subsystems.XRPDrivetrain;
 
 import java.util.function.Supplier;
@@ -13,13 +14,15 @@ import edu.wpi.first.wpilibj2.command.Command;
 /** An example command that uses an example subsystem. */
 public class TankdriveCommand extends Command {
     XRPDrivetrain drivetrain;
+    SensorSubsystem sensor;
     Supplier<Double> leftY, rightX;
     Supplier<Boolean> aPressed, bPressed;
     double speed, speedMultiplier = 1;
     double zAngle;
 
-  public TankdriveCommand(XRPDrivetrain drivetrain, Supplier<Double> rightX, Supplier<Double> leftY,  Supplier<Boolean> aPressed, Supplier<Boolean> bPressed) {
+  public TankdriveCommand(XRPDrivetrain drivetrain, SensorSubsystem sensor, Supplier<Double> rightX, Supplier<Double> leftY,  Supplier<Boolean> aPressed, Supplier<Boolean> bPressed) {
     this.drivetrain = drivetrain;
+    this.sensor = sensor;
     this.leftY = leftY;
     this.rightX = rightX;
     this.aPressed = aPressed;
@@ -39,15 +42,23 @@ public class TankdriveCommand extends Command {
   @Override
   public void execute() {
     if(aPressed.get() && !bPressed.get()) {
-        speedMultiplier = 0.5  ; // younger kid speed
+        speedMultiplier = 0.75  ; // younger kid speed
     } else if (bPressed.get()) {
         speedMultiplier = 1; // older kid speed
     }
     speed = speedMultiplier * leftY.get();
     zAngle = rightX.get();
-    if (rightX.get() != 0 && leftY.get() != 0) {
-        drivetrain.arcadeDrive(speed, zAngle);
-        System.out.println("speed +" + speed + ", zAngle "+ zAngle);
+    if (zAngle <= 0.1 && zAngle >= -0.1) {
+      zAngle = 0;
+    if (sensor.getRangeInches() <= 3.5){
+      speed = 0;
+      zAngle = 0;
+    }
+    }
+    if (rightX.get() != 0 || leftY.get() != 0) {
+      drivetrain.arcadeDrive(speed, zAngle);
+      System.out.println("speed +" + speed + ", zAngle "+ zAngle);
+      System.out.println(sensor.getRangeInches());
     }
   }
 

@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.XboxController;
 import frc.robot.commands.TankdriveCommand;
+import frc.robot.subsystems.SensorSubsystem;
 import frc.robot.subsystems.XRPDrivetrain;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
@@ -21,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final XRPDrivetrain m_xrpDrivetrain = new XRPDrivetrain();
+  private final SensorSubsystem sensor = new SensorSubsystem();
 
   
   
@@ -42,7 +44,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
     CommandXboxController xboxController = new CommandXboxController(Constants.DriveConstants.k_controller_port);
      
-    m_xrpDrivetrain.setDefaultCommand(new TankdriveCommand(m_xrpDrivetrain, ()-> xboxController.getRightX(), ()-> xboxController.getLeftY(), ()-> xboxController.a().getAsBoolean(), ()-> xboxController.b().getAsBoolean()));
+    m_xrpDrivetrain.setDefaultCommand(new TankdriveCommand(m_xrpDrivetrain, sensor, ()-> xboxController.getRightX(), ()-> xboxController.getLeftY(), ()-> xboxController.a().getAsBoolean(), ()-> xboxController.b().getAsBoolean()));
     }
 
       public Command getAutonomousCommand() {
